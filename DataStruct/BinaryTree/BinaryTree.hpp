@@ -41,7 +41,7 @@ public:
 	size_t Depth();								//二叉树深度/高度
 	size_t GetLeafNodeNum();					//叶子节点个数
 	size_t GetKNodeNum();						//第K层叶子节点个数
-	Node* Find();								//查节点
+	Node* Find(const T &);								//查节点是否在树中
 	Node* GetCommonAncestralNode(Node*,Node*);	//两个节点最近的公共祖先节点
 	//Node* IsBalanceTree();					//判断是否为平衡树
 	size_t GetMaxDistance();					//二叉树中最远两节点间的距离
@@ -56,7 +56,9 @@ protected:
 	void _InOrder(Node *);							//中序遍历
 	void _PostOrder(Node*);							//后序遍历
 	size_t _Depth(Node*);							//求深度
-	
+	void _GetLeafNodeNum(Node*,size_t&);			//求叶子结点个数
+	Node* _Find(Node *,const T &);
+	bool _FindPath(Node*,Node*,std::stack<Node*>&); 
 private:
 	BinaryTree &operator=(const BinaryTree&);	//禁止拷贝
 	BinaryTree(const BinaryTree&);				//禁止赋值
@@ -175,7 +177,6 @@ void BinaryTree<T>::InOrderNonR(){
 
 		cur = top->_right;
 	}
-
 	std::cout<<std::endl;
 }
 
@@ -218,4 +219,102 @@ void BinaryTree<T>::PostOrderNonR(){
 	}
 	std::cout<<std::endl;
 }
+
+//求二叉树的高度/深度
+template<typename T>
+size_t BinaryTree<T>::Depth(){
+	return _Depth(_root);
+}
+template<typename T>
+size_t BinaryTree<T>::_Depth(Node *root){
+	if(root==NULL){
+		return 0;
+	}
+	size_t leftD = _Depth(root->_left);
+	size_t rightD = _Depth(root->_right);
+	return leftD>rightD?leftD+1:rightD+1;
+}
+
+//求二叉树的叶子个数
+template<typename T>
+size_t BinaryTree<T>::GetLeafNodeNum(){
+	size_t count = 0;
+	_GetLeafNodeNum(_root,count);
+	return count;
+}
+template<typename T>
+void BinaryTree<T>::_GetLeafNodeNum(Node *root,size_t &count){
+	if(root==NULL){
+		return ;
+	}
+	if(root->_left==NULL&&root->_right==NULL){
+		++count;
+		return ;
+	}
+	_GetLeafNodeNum(root->_left,count);
+	_GetLeafNodeNum(root->_right,count);
+}
+
+//查找某个节点是否在树中
+template<typename T>
+typename BinaryTree<T>::Node* BinaryTree<T>::Find(const T &value){
+	return _Find(_root,value);
+}
+template<typename T>
+typename BinaryTree<T>::Node* BinaryTree<T>::_Find(Node *root,const T &value){
+	if(root==NULL){
+		return NULL;
+	}
+	if(root->_value == value){
+		return root;
+	}
+	Node *ret = _Find(root->_left,value);
+	if(ret==NULL){
+		ret = _Find(root->_right,value);
+	}
+	return ret;
+}
+
+template<typename T>
+typename BinaryTree<T>::Node *BinaryTree<T>::GetCommonAncestralNode(Node *n1,Node *n2){
+	std::stack<Node*> s1;
+	std::stack<Node*> s2;
+	_FindPath(_root,n1,s1);
+	_FindPath(_root,n2,s2);
+	std::cout<<n1->_value<<":";
+	while(!s1.empty()){
+		std::cout<<s1.top()->_value<<" ";
+		s1.pop();
+	}
+	std::cout<<std::endl;
+	std::cout<<n2->_value<<":";
+	while(!s2.empty()){
+		std::cout<<s2.top()->_value<<" ";
+		s2.pop();
+	}
+	std::cout<<std::endl;
+	return _root;
+}
+
+template<typename T>
+bool BinaryTree<T>::_FindPath(Node*root,Node *n,std::stack<Node*> &path){
+	if(root==NULL || n == NULL){
+		return false;
+	}
+	
+	path.push(root);
+	if(root == n){
+		return true;
+	}
+	
+	if(_FindPath(root->_left,n,path)){
+		return true;
+	}
+	
+	if(_FindPath(root->_right,n,path)){
+		return true;
+	}
+	path.pop();
+}
+
 #endif
