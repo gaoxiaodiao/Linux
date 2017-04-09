@@ -30,7 +30,25 @@ void Test1(){
 	std::cout<<std::endl;
 
 }//析构(DEBUG::后序遍历)
+//测试高度
+void Test2(){	
+	int arr[] = {1,2,4,'#','#',7,'#','#',3,5,'#','#',6,'#',8};
+	BinaryTree<int> tree(arr,sizeof(arr)/sizeof(*arr),'#');
+	std::cout<<"二叉树的高度为:"<<tree.Depth()<<std::endl;
+	std::cout<<"二叉树的叶子结点个数为:"<<tree.GetLeafNodeNum()<<std::endl;
+	for(int i=0; i<sizeof(arr)/sizeof(*arr); ++i){
+		if(arr[i]!='#'){
+			std::cout<<arr[i]<<":"<<tree.Find(arr[i])<<std::endl;
+		}
+	}
+	int n1 = 4;
+	int n2 = 8;
+	std::cout<<n1<<"与"<<n2<<"之间的公共祖先为:"<<tree.GetCommonAncestralNode(tree.Find(n1),tree.Find(n2))<<std::endl;
+
+}
+
 int main(){
 	Test1();
+	Test2();
 	return 0;
 }
