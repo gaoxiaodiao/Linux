@@ -8,6 +8,7 @@
 #define __RBTREE_H__
 #include<iostream>
 #include<cassert>
+#include<stack>
 //颜色定义
 enum COLOR{
 	RED,
@@ -30,15 +31,18 @@ class RBTree{
 	typedef RBTreeNode<K,V> Node;
 public:
 	RBTree();								//构造函数
-	RBTree(const RBTree & rbt);				//拷贝构造
-	RBTree &operator=(const RBTree &rbt);	//赋值运算符重载
 	~RBTree();								//析构函数
+private:
+	//懒得写这些
+	RBTree(const RBTree & rbt);				//禁止拷贝构造
+	RBTree &operator=(const RBTree &rbt);	//禁止赋值运算符重载
 public:
-	std::pair<Node*,bool> Insert(const K& k,const V &v);
-	//void Insert(const K& k,const V &v);
-	bool CheckIsBalance();
+	std::pair<Node*,bool> Insert(const K& k,const V &v);	//插入元素
+	bool CheckIsBalance();									//判断是否平衡
+	void InOrderNonR();										//中序遍历非递归
 protected:
 	void _Destory(Node *root);
+	bool _CheckIsBalance(Node *,int,const int);
 	void RotateL(Node *parent);
 	void RotateR(Node *parent);
 private:
@@ -160,6 +164,7 @@ std::pair<typename RBTree<K,V>::Node*,bool> RBTree<K,V>::Insert(const K&key,cons
 	_root->_color = BLACK;
 	return std::make_pair(ret,true);
 }
+//左旋
 template<typename K,typename V>
 void RBTree<K,V>::RotateL(Node *parent){
 	Node *subR = parent->_right;
@@ -187,6 +192,7 @@ void RBTree<K,V>::RotateL(Node *parent){
 	parent->_parent = subR;
 }
 
+//右旋
 template<typename K,typename V>
 void RBTree<K,V>::RotateR(Node *parent){
 	Node *subL = parent->_left;
@@ -213,4 +219,68 @@ void RBTree<K,V>::RotateR(Node *parent){
 	subL->_right = parent;
 	parent->_parent = subL;
 }
+//检测该树是否为红黑树
+//1.所有路径黑色节点数目相同
+//2.不能有连续的红节点
+//(以上条件满足,则满足最短路径不超过最长路径的两倍)
+template<typename K,typename V>
+bool RBTree<K,V>::CheckIsBalance(){
+	int leftBlackNum = 0;
+	int curBlackNum = 0;
+	//记录最左侧黑色节点的数量
+	Node *cur = _root;
+	while(cur!=NULL){
+		if(cur->_color == BLACK){
+			++leftBlackNum;
+		}
+		cur = cur->_left;
+	}
+	//递归对颜色、黑色节点数目进行判断
+	return _CheckIsBalance(_root,curBlackNum,leftBlackNum);
+}
+
+template<typename K,typename V>
+bool RBTree<K,V>::_CheckIsBalance(Node *root,int curBlackNum,const int leftBlackNum){
+	if(root == NULL){
+		return true;
+	}
+	if(root->_color == BLACK){
+		++curBlackNum;
+	}
+	//该路径黑色节点数目与最左侧黑色节点数目不同
+	if(root->_left==NULL &&
+		root->_right==NULL &&
+		curBlackNum!=leftBlackNum){
+		return false;
+	}
+	//存在连续的红节点
+	if(root->_color==RED && root->_parent->_color == RED){
+		return false;
+	}
+	return _CheckIsBalance(root->_left,curBlackNum,leftBlackNum)&&
+			_CheckIsBalance(root->_right,curBlackNum,leftBlackNum);
+}
+
+template<typename K,typename V>
+void RBTree<K,V>::InOrderNonR(){
+	std::stack<Node*> s;
+	Node *cur = _root;
+	while(cur!=NULL || !s.empty()){
+		//走到最左路径
+		while(cur!=NULL){
+			s.push(cur);
+			cur = cur->_left;
+		}
+
+		//无路可走,拿出Stack中的节点访问
+		Node *top = s.top();
+		s.pop();
+		std::cout<<top->_key<<" ";
+
+		//访问右子树
+		cur = top->_right;
+	}
+	std::cout<<std::endl;
+}
+
 #endif
