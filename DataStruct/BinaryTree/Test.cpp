@@ -28,6 +28,11 @@ void Test1(){
 	tree.PostOrder();
 	tree.PostOrderNonR();
 	std::cout<<std::endl;
+	
+	//层序遍历
+	std::cout<<"层序遍历:"<<std::endl;
+	tree.LevelOrder();
+	std::cout<<std::endl;
 
 }//析构(DEBUG::后序遍历)
 //测试高度
@@ -43,7 +48,7 @@ void Test2(){
 	}
 	int n1 = 4;
 	int n2 = 8;
-	std::cout<<n1<<"与"<<n2<<"之间的公共祖先为:"<<tree.GetCommonAncestralNode(tree.Find(n1),tree.Find(n2))<<std::endl;
+	std::cout<<n1<<"与"<<n2<<"之间的公共祖先为:"<<tree.GetCommonAncestralNode(tree.Find(n1),tree.Find(n2))->_value<<std::endl;
 
 }
 
