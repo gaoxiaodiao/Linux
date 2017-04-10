@@ -9,7 +9,7 @@
 #define __DEBUG__
 #include<iostream>
 #include<stack>
-
+#include<queue>
 //二叉树节点声明
 template<typename T>
 struct BinaryTreeNode{
@@ -111,6 +111,8 @@ void BinaryTree<T>::_Destroy(Node *root){
 }
 
 //前序遍历
+//时间复杂度O(N)
+//平均空间复杂度O(logN) 最坏空间复杂度O(N)
 template<typename T>
 void BinaryTree<T>::PrevOrder(){
 	_PrevOrder(_root);
@@ -220,7 +222,28 @@ void BinaryTree<T>::PostOrderNonR(){
 	std::cout<<std::endl;
 }
 
+//层序遍历
+//时间复杂度O(N)
+//空间复杂度O(2^logN)
+template<typename T>
+void BinaryTree<T>::LevelOrder(){
+	std::queue<Node*> q;
+	q.push(_root);
+	while(!q.empty()){
+		Node *front = q.front();
+		q.pop();
+		if(front!=NULL){
+			std::cout<<front->_value<<" ";
+			q.push(front->_left);
+			q.push(front->_right);
+		}
+	}
+	std::cout<<std::endl;	
+}
+
 //求二叉树的高度/深度
+//时间复杂度O(N)
+//平均空间复杂度O(logN)  最差O(N)
 template<typename T>
 size_t BinaryTree<T>::Depth(){
 	return _Depth(_root);
@@ -236,6 +259,7 @@ size_t BinaryTree<T>::_Depth(Node *root){
 }
 
 //求二叉树的叶子个数
+//时间复杂度O(N)
 template<typename T>
 size_t BinaryTree<T>::GetLeafNodeNum(){
 	size_t count = 0;
@@ -256,6 +280,7 @@ void BinaryTree<T>::_GetLeafNodeNum(Node *root,size_t &count){
 }
 
 //查找某个节点是否在树中
+//时间复杂度O(N)
 template<typename T>
 typename BinaryTree<T>::Node* BinaryTree<T>::Find(const T &value){
 	return _Find(_root,value);
@@ -275,25 +300,61 @@ typename BinaryTree<T>::Node* BinaryTree<T>::_Find(Node *root,const T &value){
 	return ret;
 }
 
+/*
+//找两节点公共祖先
+//时间复杂度O(N*N)
+//空间复杂度O(1)
 template<typename T>
-typename BinaryTree<T>::Node *BinaryTree<T>::GetCommonAncestralNode(Node *n1,Node *n2){
+typename BinaryTree<T>::Node *BinaryTree<T>::_GetCommonAncestralNode(Node*root,Node *n1,Node *n2){
+	if(n1==NULL || n2 == NULL){
+		return NULL;
+	}
+
+	bool n1InLeft,n1InRight,n2InLeft,n2InRight;
+	n1InLeft = _Find(root->_left,n1->_value)==NULL?false:true;
+	n1InRight = n1InLeft?false:true;
+	n2InLeft = _Find(root->_left,n2->_value)!=NULL?true:false;
+	n2InRight = n2InLeft?false:true;
+
+	if((n1InLeft && n2InRight) || (n1InRight && n2InLeft)){
+		return root;
+	}else if(n1InLeft && n2InLeft){
+		return _GetCommonAncestralNode(root->_left,n1,n2);
+	}else{
+		return _GetCommonAncestralNode(root->_right,n1,n2);
+	}
+
+	return NULL;
+}
+*/
+
+//找两节点公共祖先(优化版)
+//时间复杂度O(N)
+//平均空间复杂度O(logN)  最差O(N)与树的形态有关(深度)
+template<typename T>
+typename BinaryTree<T>::Node *BinaryTree<T>::GetCommonAncestralNodeOP(Node *n1,Node *n2){
 	std::stack<Node*> s1;
 	std::stack<Node*> s2;
+	
+	//找n1、n2路径分别存放在s1、s2里
 	_FindPath(_root,n1,s1);
 	_FindPath(_root,n2,s2);
-	std::cout<<n1->_value<<":";
-	while(!s1.empty()){
-		std::cout<<s1.top()->_value<<" ";
+
+	//删除多余的路径
+	while(s1.size() > s2.size()){
 		s1.pop();
 	}
-	std::cout<<std::endl;
-	std::cout<<n2->_value<<":";
-	while(!s2.empty()){
-		std::cout<<s2.top()->_value<<" ";
+	while(s2.size() > s1.size()){
 		s2.pop();
 	}
-	std::cout<<std::endl;
-	return _root;
+	
+	//找最近公共祖先
+	while(s1.top()!=s2.top()){
+		s1.pop();
+		s2.pop();
+	}
+
+	return s1.top();
 }
 
 template<typename T>
@@ -303,18 +364,23 @@ bool BinaryTree<T>::_FindPath(Node*root,Node *n,std::stack<Node*> &path){
 	}
 	
 	path.push(root);
+
 	if(root == n){
 		return true;
 	}
-	
+
 	if(_FindPath(root->_left,n,path)){
 		return true;
 	}
-	
+
 	if(_FindPath(root->_right,n,path)){
 		return true;
 	}
+
 	path.pop();
+	return false;
 }
+
+
 
 #endif
