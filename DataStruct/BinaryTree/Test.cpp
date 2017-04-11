@@ -86,10 +86,19 @@ void Test4(){
 		std::cout<<e.what()<<std::endl;
 	}
 }
+//测试二叉树映像
+void Test5(){	
+	int arr[] = {1,2,4,'#','#',7,'#','#',3,5,'#','#',6,'#',8};
+	BinaryTree<int> tree(arr,sizeof(arr)/sizeof(*arr),'#');
+	tree.PrevOrderNonR();
+	tree.GetMirrorTree();
+	tree.PrevOrderNonR();
+}
 int main(){
 	//Test1();
 	//Test2();
 	//Test3();
-	Test4();
+	//Test4();
+	Test5();
 	return 0;
 }
