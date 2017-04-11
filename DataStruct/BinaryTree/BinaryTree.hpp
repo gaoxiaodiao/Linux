@@ -65,6 +65,7 @@ protected:
 	bool _FindPath(Node*,Node*,std::stack<Node*>&); 
 	size_t _GetMaxDistance(Node*,size_t&);
 	Node* _ReBuiltTree(T*,T*,T*,T*);
+	void _GetMirrorTree(Node*);
 private:
 	BinaryTree &operator=(const BinaryTree&);	//禁止拷贝
 	BinaryTree(const BinaryTree&);				//禁止赋值
@@ -439,10 +440,12 @@ typename BinaryTree<T>::Node *BinaryTree<T>::_ReBuiltTree(T *prevorderstart,T *p
 		if((inorderstart==inorderend ) && (*prevorderstart==*inorderstart)){
 			return root;
 		}else{
+#ifdef __BEBUG__
 			std::cout<<"inorderstart:"<<inorderstart<<"->"<<*inorderstart<<std::endl;
 			std::cout<<"inorderend:"<<inorderend<<"->"<<*inorderend<<std::endl;
 			std::cout<<"*prevorderstart:"<<*prevorderstart<<std::endl;
 			std::cout<<"*inorderstart:"<<*inorderstart<<std::endl;
+#endif
 			throw std::invalid_argument("序列不合法");	
 		}
 	}
@@ -469,6 +472,20 @@ typename BinaryTree<T>::Node *BinaryTree<T>::_ReBuiltTree(T *prevorderstart,T *p
 	}
 
 	return root;
+}
+//二叉树镜像
+template<typename T>
+void BinaryTree<T>::GetMirrorTree(){
+	_GetMirrorTree(_root);
+}
+template<typename T>
+void BinaryTree<T>::_GetMirrorTree(Node *root){
+	if(root==NULL){
+		return ;
+	}
+	std::swap(root->_left,root->_right);
+	_GetMirrorTree(root->_left);
+	_GetMirrorTree(root->_right);
 }
 
 #endif
