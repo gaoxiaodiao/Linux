@@ -10,6 +10,9 @@
 #include<iostream>
 #include<stack>
 #include<queue>
+#include<cassert>
+#include<exception>
+#include<string>
 //二叉树节点声明
 template<typename T>
 struct BinaryTreeNode{
@@ -29,6 +32,7 @@ class BinaryTree{
 	typedef BinaryTreeNode<T> Node;
 public:
 	BinaryTree(T*,size_t sz,const T&invalid);		//构造函数
+	BinaryTree(T*,T*,size_t sz);					//重建二叉树
 	~BinaryTree();									//析构函数
 	void PrevOrder();			//前序遍历
 	void PrevOrderNonR();		//前序遍历非递归
@@ -45,7 +49,7 @@ public:
 	Node* GetCommonAncestralNode(Node*,Node*);	//两个节点最近的公共祖先节点
 	//Node* IsBalanceTree();					//判断是否为平衡树
 	size_t GetMaxDistance();					//二叉树中最远两节点间的距离
-	void ReBuiltTree(int*,int*,size_t);			//根据前序、中序重建二叉树
+	Node* ReBuiltTree(T*,T*,size_t);			//根据前序、中序重建二叉树
 	bool IsCompleteTree();						//判断是否为完全二叉树
 	void GetMirrorTree();						//求二叉树的镜像
 	//Node* BecomeList();							//将二叉搜索树转换为双向链表
@@ -59,6 +63,8 @@ protected:
 	void _GetLeafNodeNum(Node*,size_t&);			//求叶子结点个数
 	Node* _Find(Node *,const T &);
 	bool _FindPath(Node*,Node*,std::stack<Node*>&); 
+	size_t _GetMaxDistance(Node*,size_t&);
+	Node* _ReBuiltTree(T*,T*,T*,T*);
 private:
 	BinaryTree &operator=(const BinaryTree&);	//禁止拷贝
 	BinaryTree(const BinaryTree&);				//禁止赋值
@@ -74,6 +80,13 @@ BinaryTree<T>::BinaryTree(T *arr,size_t sz,const T &invalid){
 	size_t index = 0;
 	_root = _CreateTree(arr,sz,invalid,index);
 }
+
+//构造函数(重建二叉树)
+template<typename T>
+BinaryTree<T>::BinaryTree(T*prevorder,T*inorder,size_t sz){
+	_root = ReBuiltTree(prevorder,inorder,sz);
+}
+
 //创建二叉树
 template<typename T>
 typename BinaryTree<T>::Node *BinaryTree<T>::_CreateTree(T *arr,size_t sz,const T& invalid,size_t &index){
@@ -85,6 +98,7 @@ typename BinaryTree<T>::Node *BinaryTree<T>::_CreateTree(T *arr,size_t sz,const 
 	}
 	return NULL;
 }
+
 //析构函数
 template<typename T>
 BinaryTree<T>::~BinaryTree(){
@@ -332,7 +346,7 @@ typename BinaryTree<T>::Node *BinaryTree<T>::_GetCommonAncestralNode(Node*root,N
 //时间复杂度O(N)
 //平均空间复杂度O(logN)  最差O(N)与树的形态有关(深度)
 template<typename T>
-typename BinaryTree<T>::Node *BinaryTree<T>::GetCommonAncestralNodeOP(Node *n1,Node *n2){
+typename BinaryTree<T>::Node *BinaryTree<T>::GetCommonAncestralNode(Node *n1,Node *n2){
 	std::stack<Node*> s1;
 	std::stack<Node*> s2;
 	
@@ -381,6 +395,80 @@ bool BinaryTree<T>::_FindPath(Node*root,Node *n,std::stack<Node*> &path){
 	return false;
 }
 
+//找最远两节点之间的距离
+//时间复杂度O(N)
+template<typename T>
+size_t BinaryTree<T>::GetMaxDistance(){
+	size_t maxLen = 0;
+	_GetMaxDistance(_root,maxLen);
+	return maxLen;
+}
 
+template<typename T>
+size_t BinaryTree<T>::_GetMaxDistance(Node *root,size_t &maxLen){
+	if(root==NULL){
+		return 0;	
+	}
+	
+	size_t leftH = _GetMaxDistance(root->_left,maxLen);
+	size_t rightH = _GetMaxDistance(root->_right,maxLen);
+	size_t sum = leftH+rightH;
+	
+	if(sum>maxLen){
+		maxLen = sum;
+	}
+
+	return leftH>rightH?leftH+1:rightH+1;
+}
+
+//重建二叉树[]
+template<typename T>
+typename BinaryTree<T>::Node *BinaryTree<T>::ReBuiltTree(T *prevorder,T *inorder,size_t sz){
+	assert(prevorder&&inorder&&sz>0);
+	return _ReBuiltTree(prevorder,prevorder+sz-1,inorder,inorder+sz-1);
+}
+
+template<typename T>
+typename BinaryTree<T>::Node *BinaryTree<T>::_ReBuiltTree(T *prevorderstart,T *prevorderend,T* inorderstart,T *inorderend){
+
+	assert(prevorderstart&&prevorderend&&inorderstart&&inorderend);
+	
+	Node *root = new Node(*prevorderstart);
+	//叶子节点
+	if(prevorderstart==prevorderend){
+		if((inorderstart==inorderend ) && (*prevorderstart==*inorderstart)){
+			return root;
+		}else{
+			std::cout<<"inorderstart:"<<inorderstart<<"->"<<*inorderstart<<std::endl;
+			std::cout<<"inorderend:"<<inorderend<<"->"<<*inorderend<<std::endl;
+			std::cout<<"*prevorderstart:"<<*prevorderstart<<std::endl;
+			std::cout<<"*inorderstart:"<<*inorderstart<<std::endl;
+			throw std::invalid_argument("序列不合法");	
+		}
+	}
+
+	//在中序中找根节点，划分区间
+	T *rootinorder = inorderstart;
+	while(rootinorder<=inorderend && *prevorderstart!=*rootinorder){
+		++rootinorder;
+	}
+
+	if(rootinorder==inorderend&&*prevorderstart!=*rootinorder){
+		throw std::invalid_argument("序列不合法!02");
+	}
+	
+	int leftlength = rootinorder - inorderstart;
+	T *leftprev = prevorderstart + leftlength;
+	//递归创建左右树
+	if( leftlength > 0){
+		root->_left = _ReBuiltTree(prevorderstart+1,leftprev,inorderstart,rootinorder-1);
+	}
+
+	if( leftlength < prevorderend-prevorderstart){
+		root->_right = _ReBuiltTree(leftprev+1,prevorderend,rootinorder+1,inorderend);
+	}
+
+	return root;
+}
 
 #endif
