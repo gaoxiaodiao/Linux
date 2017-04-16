@@ -7,7 +7,7 @@
 #include<iostream>
 #include<stack>
 #include<cassert>
-#define __DEBUG__
+#define __QUEUE__DEBUG__
 template<typename T>
 class Queue{
 public:
@@ -36,8 +36,8 @@ void Queue<T>::_SinToSout(){
 template<typename T>
 void Queue<T>::Push(const T& e){
 	sin.push(e);
-#ifdef __DEBUG__
-	std::cout<<e<<"入队!"<<std::endl;
+#ifdef __QUEUE__DEBUG__
+	std::cout<<"\033[31m"<<e<<"入队!"<<"\033[0m"<<std::endl;
 #endif	
 }
 
@@ -49,8 +49,8 @@ void Queue<T>::Pop(){
 		assert(!sin.empty());	//空队列断言
 		_SinToSout();	
 	}
-#ifdef __DEBUG__
-	std::cout<<sout.top()<<"出队!"<<std::endl;
+#ifdef __QUEUE__DEBUG__
+	std::cout<<"\033[32m"<<sout.top()<<"出队!"<<"\033[0m"<<std::endl;
 #endif
 	sout.pop();
 }
