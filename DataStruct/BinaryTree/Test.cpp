@@ -94,11 +94,23 @@ void Test5(){
 	tree.GetMirrorTree();
 	tree.PrevOrderNonR();
 }
+void Test6(){	
+	int arr1[] = {1,2,4,'#','#',7,'#','#',3,5,'#','#',6,'#',8};	//非完全二叉树
+	int arr2[] = {1,2,4,0,0,5,0,0,3,0,0};	//完全二叉树
+	int arr3[] = {1,2,4,0,0,5,0,0,3,0,6};	//非完全二叉树
+	BinaryTree<int> tree1(arr1,sizeof(arr1)/sizeof(*arr1),'#');
+	BinaryTree<int> tree2(arr2,sizeof(arr2)/sizeof(*arr2),0);
+	BinaryTree<int> tree3(arr3,sizeof(arr3)/sizeof(*arr3),0);
+	std::cout<<tree1.IsCompleteTree()<<std::endl;	
+	std::cout<<tree2.IsCompleteTree()<<std::endl;	
+	std::cout<<tree3.IsCompleteTree()<<std::endl;	
+}
 int main(){
 	//Test1();
 	//Test2();
 	//Test3();
 	//Test4();
-	Test5();
+	//Test5();
+	Test6();
 	return 0;
 }
