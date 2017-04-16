@@ -29,6 +29,7 @@ struct BinaryTreeNode{
 //二叉树结构声明
 template<typename T>
 class BinaryTree{
+public:	//为了在外部调试二叉树转换为双向链表,在此把它设为public
 	typedef BinaryTreeNode<T> Node;
 public:
 	BinaryTree(T*,size_t sz,const T&invalid);		//构造函数
@@ -52,7 +53,7 @@ public:
 	Node* ReBuiltTree(T*,T*,size_t);			//根据前序、中序重建二叉树
 	bool IsCompleteTree();						//判断是否为完全二叉树
 	void GetMirrorTree();						//求二叉树的镜像
-	//Node* BecomeList();							//将二叉搜索树转换为双向链表
+	Node* BecomeList();						//将二叉搜索树转换为双向链表
 protected:
 	Node *_CreateTree(T*,size_t,const T&,size_t&);	//创建树
 	void _Destroy(Node*);							//销毁树
@@ -67,6 +68,7 @@ protected:
 	Node* _ReBuiltTree(T*,T*,T*,T*);
 	void _GetMirrorTree(Node*);
 	void _GetKNodeNum(Node*,size_t &,const size_t);
+	void _BecomeList(Node*,Node*&);
 private:
 	BinaryTree &operator=(const BinaryTree&);	//禁止拷贝
 	BinaryTree(const BinaryTree&);				//禁止赋值
@@ -535,5 +537,32 @@ void BinaryTree<T>::_GetKNodeNum(Node *root,size_t &count,const size_t k){
 	}
 	_GetKNodeNum(root->_left,count,k-1);
 	_GetKNodeNum(root->_right,count,k-1);
+}
+//将二叉搜索树转换为二叉链表
+template<typename T>
+typename BinaryTree<T>::Node *BinaryTree<T>::BecomeList(){
+	//找头节点
+	Node *cur = _root;
+	while(cur->_left!=NULL){
+		cur = cur->_left;
+	}
+	Node *prev = NULL;
+	_BecomeList(_root,prev);
+	return cur;
+}
+//类似与中序的线索化
+template<typename T>
+void BinaryTree<T>::_BecomeList(Node*root,Node*&prev){
+	if(root==NULL){
+		return ;
+	}
+
+	_BecomeList(root->_left,prev);
+	root->_left = prev;
+	if(prev!=NULL){
+		prev->_right = root;
+	}
+	prev = root;
+	_BecomeList(root->_right,prev);
 }
 #endif
