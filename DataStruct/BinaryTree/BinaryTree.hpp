@@ -487,5 +487,34 @@ void BinaryTree<T>::_GetMirrorTree(Node *root){
 	_GetMirrorTree(root->_left);
 	_GetMirrorTree(root->_right);
 }
+//判断是否为完全二叉树
+template<typename T>
+bool BinaryTree<T>::IsCompleteTree(){
+	std::queue<Node*> q;
+	q.push(_root);
+	bool flag = true;
+	while(!q.empty()){
+		Node *front = q.front();
+		q.pop();
 
+		if(front->_left == NULL){
+			flag = false;
+		}else{
+			if(flag==false){
+				return false;
+			}
+			q.push(front->_left);
+		}
+
+		if(front->_right == NULL){
+			flag = false;
+		}else{
+			if(flag==false){
+				return false;
+			}
+			q.push(front->_right);
+		}
+	}
+	return true;
+}
 #endif
