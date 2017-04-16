@@ -94,10 +94,12 @@ void Test5(){
 	tree.GetMirrorTree();
 	tree.PrevOrderNonR();
 }
+//测试判断是否为完全二叉树
 void Test6(){	
 	int arr1[] = {1,2,4,'#','#',7,'#','#',3,5,'#','#',6,'#',8};	//非完全二叉树
 	int arr2[] = {1,2,4,0,0,5,0,0,3,0,0};	//完全二叉树
 	int arr3[] = {1,2,4,0,0,5,0,0,3,0,6};	//非完全二叉树
+	
 	BinaryTree<int> tree1(arr1,sizeof(arr1)/sizeof(*arr1),'#');
 	BinaryTree<int> tree2(arr2,sizeof(arr2)/sizeof(*arr2),0);
 	BinaryTree<int> tree3(arr3,sizeof(arr3)/sizeof(*arr3),0);
@@ -105,12 +107,37 @@ void Test6(){
 	std::cout<<tree2.IsCompleteTree()<<std::endl;	
 	std::cout<<tree3.IsCompleteTree()<<std::endl;	
 }
+//测试第K层节点个数
+void Test7(){
+	int arr1[] = {1,2,4,'#','#',7,'#','#',3,5,'#','#',6,'#',8};	//非完全二叉树
+	int arr2[] = {1,2,4,0,0,5,0,0,3,0,0};	//完全二叉树
+	int arr3[] = {1,2,4,0,0,5,0,0,3,0,6};	//非完全二叉树
+	BinaryTree<int> tree1(arr1,sizeof(arr1)/sizeof(*arr1),'#');
+	BinaryTree<int> tree2(arr2,sizeof(arr2)/sizeof(*arr2),0);
+	BinaryTree<int> tree3(arr3,sizeof(arr3)/sizeof(*arr3),0);
+	std::cout<<tree1.GetKNodeNum(1)<<std::endl;	//1
+	std::cout<<tree1.GetKNodeNum(2)<<std::endl;	//2
+	std::cout<<tree1.GetKNodeNum(3)<<std::endl;	//4
+	std::cout<<tree1.GetKNodeNum(4)<<std::endl;	//1
+	std::cout<<tree1.GetKNodeNum(5)<<std::endl;	//0
+
+	std::cout<<tree2.GetKNodeNum(1)<<std::endl;	//1
+	std::cout<<tree2.GetKNodeNum(2)<<std::endl;	//2
+	std::cout<<tree2.GetKNodeNum(3)<<std::endl;	//2
+	std::cout<<tree2.GetKNodeNum(4)<<std::endl;	//0
+
+	std::cout<<tree3.GetKNodeNum(1)<<std::endl;	//1
+	std::cout<<tree3.GetKNodeNum(2)<<std::endl;	//2
+	std::cout<<tree3.GetKNodeNum(3)<<std::endl;	//3
+	std::cout<<tree3.GetKNodeNum(4)<<std::endl;	//0
+}
 int main(){
 	//Test1();
 	//Test2();
 	//Test3();
 	//Test4();
 	//Test5();
-	Test6();
+	//Test6();
+	Test7();
 	return 0;
 }
