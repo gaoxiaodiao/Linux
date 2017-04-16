@@ -5,6 +5,7 @@
 *开发环境:Kali Linux/g++ v6.3.0
 ****************************************/
 #include"TwoStackImpQueue.hpp"
+#include"TwoQueueImpStack.hpp"
 void TestQueue(){
 	Queue<int> q;
 	q.Push(0);
@@ -21,9 +22,24 @@ void TestQueue(){
 	q.Pop();	
 	q.Pop();	
 	q.Pop();	
-
+}
+void TestStack(){
+	Stack<int> s;
+	s.Push(0);
+	s.Push(4);
+	s.Push(5);
+	s.Pop();
+	s.Pop();
+	s.Push(1);
+	s.Push(2);
+	s.Push(3);
+	s.Pop();
+	s.Pop();
+	s.Pop();
+	s.Pop();
 }
 int main(){
-	TestQueue();
+	//TestQueue();
+	TestStack();
 	return 0;
 }
