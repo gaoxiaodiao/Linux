@@ -131,6 +131,29 @@ void Test7(){
 	std::cout<<tree3.GetKNodeNum(3)<<std::endl;	//3
 	std::cout<<tree3.GetKNodeNum(4)<<std::endl;	//0
 }
+//测试将二叉树转换为双向链表
+void Test8(){
+	int arr[] = {5,3,2,1,0,0,0,4,0,0,10,7,6,0,0,8,0,9};
+	BinaryTree<int> searchTree(arr,sizeof(arr)/sizeof(*arr),0);
+	std::cout<<"这是一颗二叉搜索树,不信我中序给你看:";
+	searchTree.InOrderNonR();
+	std::cout<<std::endl;
+	typename BinaryTree<int>::Node *head = searchTree.BecomeList();
+	std::cout<<"我已经变身为双向链表,我先正序打印:"<<std::endl;
+	typename BinaryTree<int>::Node *cur = head;
+	while(cur!=NULL&&cur->_right!=NULL){
+		std::cout<<cur->_value<<"->";
+		cur = cur->_right;
+	}
+	std::cout<<cur->_value<<"->NULL"<<std::endl;
+	std::cout<<"我再逆序输出给你看:"<<std::endl;
+	while(cur!=NULL&&cur->_left!=NULL){
+		std::cout<<cur->_value<<"->";
+		cur = cur->_left;	
+	}
+	//因为,把树的结构改成了双向链表,所以,运行到这里,析构时就会出现问题
+	//出现段错误
+}
 int main(){
 	//Test1();
 	//Test2();
@@ -138,6 +161,7 @@ int main(){
 	//Test4();
 	//Test5();
 	//Test6();
-	Test7();
+	//Test7();
+	Test8();
 	return 0;
 }
