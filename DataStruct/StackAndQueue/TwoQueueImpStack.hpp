@@ -7,6 +7,7 @@
 #include<iostream>
 #include<queue>
 #include<cassert>
+#define __STACK__DEBUG__
 template<typename T>
 class Stack{
 public:
@@ -45,7 +46,7 @@ void Stack<T>::_QoutToQin(){
 template<typename T>
 void Stack<T>::Push(const T &e){
 	qin.push(e);
-#ifdef __DEBUG__
+#ifdef __STACK__DEBUG__
 	std::cout<<"\033[31m"<<e<<"入栈!"<<"\033[0m"<<std::endl;
 #endif
 }
@@ -65,7 +66,7 @@ void Stack<T>::Pop(){
 		pOut->pop();
 		--size;
 	}
-#ifdef __DEBUG__
+#ifdef __STACK__DEBUG__
 	std::cout<<"\033[32m"<<pOut->front()<<"出栈!"<<"\033[0m"<<std::endl;
 #endif
 	pOut->pop();
