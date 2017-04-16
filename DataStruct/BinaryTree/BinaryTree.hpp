@@ -44,8 +44,8 @@ public:
 	
 	size_t Depth();								//二叉树深度/高度
 	size_t GetLeafNodeNum();					//叶子节点个数
-	size_t GetKNodeNum();						//第K层叶子节点个数
-	Node* Find(const T &);								//查节点是否在树中
+	size_t GetKNodeNum(const size_t k);			//第K层叶子节点个数
+	Node* Find(const T &);						//查节点是否在树中
 	Node* GetCommonAncestralNode(Node*,Node*);	//两个节点最近的公共祖先节点
 	//Node* IsBalanceTree();					//判断是否为平衡树
 	size_t GetMaxDistance();					//二叉树中最远两节点间的距离
@@ -66,6 +66,7 @@ protected:
 	size_t _GetMaxDistance(Node*,size_t&);
 	Node* _ReBuiltTree(T*,T*,T*,T*);
 	void _GetMirrorTree(Node*);
+	void _GetKNodeNum(Node*,size_t &,const size_t);
 private:
 	BinaryTree &operator=(const BinaryTree&);	//禁止拷贝
 	BinaryTree(const BinaryTree&);				//禁止赋值
@@ -516,5 +517,23 @@ bool BinaryTree<T>::IsCompleteTree(){
 		}
 	}
 	return true;
+}
+//求第K层节点个数
+template<typename T>
+size_t BinaryTree<T>::GetKNodeNum(const size_t k){
+	size_t count = 0;
+	_GetKNodeNum(_root,count,k);
+	return count;
+}
+template<typename T>
+void BinaryTree<T>::_GetKNodeNum(Node *root,size_t &count,const size_t k){
+	if(root==NULL){
+		return ;
+	}
+	if(k==1){
+		++count;
+	}
+	_GetKNodeNum(root->_left,count,k-1);
+	_GetKNodeNum(root->_right,count,k-1);
 }
 #endif
