@@ -6,6 +6,8 @@
 ****************************************/
 #include"TwoStackImpQueue.hpp"
 #include"TwoQueueImpStack.hpp"
+#include"CheckStackArrayIsLegal.hpp"
+#include"ArrayImpTwoStack.hpp"
 void TestQueue(){
 	Queue<int> q;
 	q.Push(0);
@@ -38,8 +40,55 @@ void TestStack(){
 	s.Pop();
 	s.Pop();
 }
+void TestArray(){
+	int in[] = {1,2,3,4,5};
+	int out1[] = {4,5,3,2,1};
+	int out2[] = {5,3,1,2,4};
+	int out3[] = {3,2,1,5,4};
+	int out4[] = {3,5,4,1,2};
+	std::cout<<CheckStackArrayIsLegal(in,out1,sizeof(in)/sizeof(*in))<<std::endl;
+	std::cout<<CheckStackArrayIsLegal(in,out2,sizeof(in)/sizeof(*in))<<std::endl;
+	std::cout<<CheckStackArrayIsLegal(in,out3,sizeof(in)/sizeof(*in))<<std::endl;
+	std::cout<<CheckStackArrayIsLegal(in,out4,sizeof(in)/sizeof(*in))<<std::endl;
+}
+
+void TestTwoStack(){
+	TwoStack<int> ts;
+	ts.Push(STACK1,0);	//第一次扩容
+	ts.Push(STACK1,1);
+	ts.Push(STACK1,2);
+	ts.Push(STACK1,3);
+	ts.Push(STACK1,4);
+
+	ts.Push(STACK2,5);
+	ts.Push(STACK2,6);
+	ts.Push(STACK2,7);
+	ts.Push(STACK2,8);
+	ts.Push(STACK2,9);	//第二次扩容
+
+	ts.Push(STACK1,10);	
+	ts.Push(STACK2,11);
+
+	//STACK1:10 4 3 2 1 0
+	ts.Pop(STACK1);
+	ts.Pop(STACK1);
+	ts.Pop(STACK1);
+	ts.Pop(STACK1);
+	ts.Pop(STACK1);
+	ts.Pop(STACK1);
+	//STACK2:11 9 8 7 6 5			
+	ts.Pop(STACK2);
+	ts.Pop(STACK2);
+	ts.Pop(STACK2);
+	ts.Pop(STACK2);
+	ts.Pop(STACK2);
+	ts.Pop(STACK2);
+
+}
 int main(){
 	//TestQueue();
-	TestStack();
+	//TestStack();
+	//TestArray();
+	TestTwoStack();
 	return 0;
 }
