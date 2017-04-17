@@ -8,6 +8,7 @@
 #include"TwoQueueImpStack.hpp"
 #include"CheckStackArrayIsLegal.hpp"
 #include"ArrayImpTwoStack.hpp"
+#include"MinStack.hpp"
 void TestQueue(){
 	Queue<int> q;
 	q.Push(0);
@@ -85,10 +86,30 @@ void TestTwoStack(){
 	ts.Pop(STACK2);
 
 }
+void TestMinStack(){
+	MinStack<int> ms;
+	ms.Push(6);
+	ms.Push(5);
+	ms.Push(4);
+	ms.Push(3);
+	ms.Push(2);
+	ms.Push(1);
+	ms.Push(0);
+	ms.Push(0);
+	ms.Push(0);
+	ms.Push(0);
+	//0000123456
+	while(!ms.Empty()){
+		std::cout<<ms.Min()<<std::endl;
+		ms.Pop();
+	}
+}
+
 int main(){
 	//TestQueue();
 	//TestStack();
 	//TestArray();
-	TestTwoStack();
+	//TestTwoStack();
+	TestMinStack();
 	return 0;
 }
