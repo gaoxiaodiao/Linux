@@ -5,16 +5,16 @@
 <h1>仓库目录</h1>
 	<p>本仓库主要有以下目录.</p>
 <h2>LinuxCode - Linux系统相关的代码</h2>
-	...ProgressBar - 实现一个简单的进度条
-	...Fork - Fork()函数的使用.
-	...ZombieProcess - 实例:僵尸进程
-	...OrphanProcess - 实例:孤儿进程
+	<p>...ProgressBar - 实现一个简单的进度条</p>
+	<p>...Fork - Fork()函数的使用.</p>
+	<p>...ZombieProcess - 实例:僵尸进程</p>
+	<p>...OrphanProcess - 实例:孤儿进程</p>
 <h2>Python - Python相关代码</h2>
-	...SpiderFuncion
-	   ...GetEmailAddress.py - 通过正则表达式获取页面邮箱地址
+	<p>....SpiderFuncion</p>
+	   <p>....GetEmailAddress.py - 通过正则表达式获取页面邮箱地址</p>
 <h2>DataStruct - 数据结构相关代码</h2>
-	...BinaryTree - 二叉树相关实现及常见面试题
-	...HashTable - 简单实现哈希表(线性探测)
-	...ObjectPool - 实现一个申请、释放时间复杂度都为O(1)的内存池
+	<p>....BinaryTree - 二叉树相关实现及常见面试题</p>
+	<p>....HashTable - 简单实现哈希表(线性探测)</p>
+	<p>....ObjectPool - 实现一个申请、释放时间复杂度都为O(1)的内存池</p>
 <h2>StackAndQueue - 栈和队列相关面试题</h2>
 <h2> RBTree - 红黑树</h2>
