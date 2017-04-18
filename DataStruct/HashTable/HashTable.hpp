@@ -101,8 +101,8 @@ std::pair<typename HashTable<K,V,HashFun>::Node*,bool>
 template<typename K,typename V,typename HashFun>
 void HashTable<K,V,HashFun>::Remove(const K &key){
 	std::pair<Node*,bool> del = Find(key);
-	if(del._second != false){
-		del->_STATUS = DELETE;
+	if(del.second != false){
+		del.first->_status = DELETE;
 		--_size;
 	}
 }
