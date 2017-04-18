@@ -35,12 +35,13 @@ struct HashFun<std::string>{
 
 template<typename K,typename V,typename HashFun = HashFun<K> >
 class HashTable{
+public:
 	//哈希表数据节点
 	struct Node{
 		K _key;
 		V _value;
 		STATUS _status;
-		Node(const K &key,const V &value)
+		Node(const K &key=K(),const V &value=V())
 			:_key(key)
 			,_value(value)
 			,_status(EMPTY){}
@@ -73,15 +74,15 @@ private:
 
 /////////////////哈希表插入实现///////////////
 template<typename K,typename V,typename HashFun>
-std::pair<typename HashTable<K,V,HashFun>::Node*,bool> \
-		HashTable<K,V,HashFun>::Insert(const K &key,const V &value){	
+std::pair<typename HashTable<K,V,HashFun>::Node*,bool> 
+	HashTable<K,V,HashFun>::Insert(const K &key,const V &value){	
 		_CheckCapacity();				//检查是否需要扩容
 		size_t index = _HashFun(key);	//通过哈希方法根据key值计算下标
 		//线性探测插入
-		while(_tables[index].STATUS!=EMPTY){
+		while(_tables[index]._status!=EMPTY){
 			if(_tables[index]._key == key){
 				//防冗余(key值唯一)
-				return std::make_pair(_tables[index],false);
+				return std::make_pair(&_tables[index],false);
 			}
 			++index;	
 			if(index == _tables.size()){
@@ -91,7 +92,9 @@ std::pair<typename HashTable<K,V,HashFun>::Node*,bool> \
 		}
 		_tables[index]._key = key;
 		_tables[index]._value = value;
+		_tables[index]._status = EXIST;
 		++_size;
+		return std::make_pair(&_tables[index],true);
 	}
 
 //////////////////哈希表删除实现//////////////////
@@ -109,11 +112,11 @@ template<typename K,typename V,typename HashFun>
 std::pair<typename HashTable<K,V,HashFun>::Node*,bool>
 	HashTable<K,V,HashFun>::Find(const K &key){
 		size_t index = _HashFun(key);
-		while(_tables[index]._STATUS!=EMPTY){
+		while(_tables[index]._status!=EMPTY){
 			if(_tables[index]._key == key && 
 					_tables[index]._status == EXIST){
 				//遇到该元素,且该元素存在
-				return std::make_pair(_tables[index],true);
+				return std::make_pair(&_tables[index],true);
 			}
 			++index;
 			if(index >= _tables.size()){
@@ -121,7 +124,7 @@ std::pair<typename HashTable<K,V,HashFun>::Node*,bool>
 			}
 		}
 		//遇到空位置,该元素不存在
-		return std::make_pair(_tables[index],false);
+		return std::make_pair(&_tables[index],false);
 	}
 
 //////////////////哈希表扩容///////////////////
@@ -129,7 +132,7 @@ template<typename K,typename V,typename HashFun>
 void HashTable<K,V,HashFun>::_CheckCapacity(){
 	if(_tables.empty()){
 		//哈希表为空
-		_tables.resize(_GetNewSize(_size));
+		_tables.resize(7);
 	}
 	//当负载因子大于7时,哈希冲突概率会增大,此时扩容
 	if(_size*10/_tables.size() > 7){
@@ -152,11 +155,11 @@ void HashTable<K,V,HashFun>::_CheckCapacity(){
 ////////////////////哈希方法///////////////////
 template<typename K,typename V,typename HashFun>
 size_t HashTable<K,V,HashFun>::_HashFun(const K &key){
-	return HashFun()(key)%_size;
+	return HashFun()(key)%_tables.size();
 }
 ////////////////////素数表/////////////////////
 template<typename K,typename V,typename HashFun>
-size_t _GetNewSize(size_t size = 0){
+size_t HashTable<K,V,HashFun>::_GetNewSize(size_t size){
 	const int _PrimeSize = 28;
 	static const unsigned long _PrimeList[_PrimeSize] = {
 		53ul,97ul,193ul,389ul,769ul,1543ul, 3079ul,
