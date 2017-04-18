@@ -89,6 +89,8 @@ std::pair<typename HashTable<K,V,HashFun>::Node*,bool> \
 				index = 0;
 			}
 		}
+		_tables[index]._key = key;
+		_tables[index]._value = value;
 		++_size;
 	}
 
