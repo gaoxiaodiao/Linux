@@ -89,6 +89,7 @@ std::pair<typename HashTable<K,V,HashFun>::Node*,bool> \
 				index = 0;
 			}
 		}
+		++_size;
 	}
 
 //////////////////哈希表删除实现//////////////////
@@ -97,6 +98,7 @@ void HashTable<K,V,HashFun>::Remove(const K &key){
 	std::pair<Node*,bool> del = Find(key);
 	if(del._second != false){
 		del->_STATUS = DELETE;
+		--_size;
 	}
 }
 
