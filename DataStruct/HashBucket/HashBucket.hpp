@@ -11,7 +11,7 @@ struct HashBucketNode{
 	std::pair<K,V> _kv;
 	HashBucketNode *_next;
 	//构造函数
-	HashBucketNode(const std::pair<K,V> & kv= std::pair(K(),K()))
+	HashBucketNode(const std::pair<K,V> & kv= std::pair<K,V>(K(),V()))
 		:_kv(kv)
 		,_next(NULL){}
 };
@@ -65,7 +65,7 @@ private:
 
 //判断是否需要扩容
 template<typename K,typename V,typename HashFunc>
-HashBucket<K,V,HashFunc>::_Check(){
+void HashBucket<K,V,HashFunc>::_Check(){
 	if(_table.empty()){
 		//第一次初始化默认容量给7
 		_table.resize(7);
@@ -169,11 +169,3 @@ size_t HashBucket<K,V,HashFunc>::_GetPrimeSize(size_t size){
 	}
 	return size;
 }
-template<typename K,typename V,typename HashFunc>
-HashBucket<K,V,HashFunc>::
-template<typename K,typename V,typename HashFunc>
-HashBucket<K,V,HashFunc>::
-template<typename K,typename V,typename HashFunc>
-HashBucket<K,V,HashFunc>::
-template<typename K,typename V,typename HashFunc>
-HashBucket<K,V,HashFunc>::
