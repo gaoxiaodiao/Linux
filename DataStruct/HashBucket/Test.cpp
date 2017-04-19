@@ -8,6 +8,7 @@
 #define __HASHBUCKET_DEBUG__
 #include"HashBucket.hpp"
 void TestHashBucket(){
+	/*
 	//测试构造、析构、查找、插入、扩容、
 	//排查出错误:在插入删除时,没有进行_size的++--
 	HashBucket<int,const char*> hb(0);
@@ -33,7 +34,25 @@ void TestHashBucket(){
 	//问题1:经过我的一阵头脑风暴后,开启gdb单步调试了进去,发现原来第一次析构是在扩容的时候.第二次析构,很明显是hb变量出了函数作用域,不得已调用析构函数.
 	//问题2:再次开启gdb调试进去后发现,因为第二次扩容是容量变成了53,所以0到7的模53时,位置肯定不会在是0-7了,因此,就出现了乱序的问题.
 	//
-	int a = 10;
+	*/
+	//测试删除
+	HashBucket<int,const char*> hb2;
+	hb2.Insert(0,"离离原上草,");
+	hb2.Insert(1,"一岁一枯荣.");
+	hb2.Insert(2,"野火烧不尽,");
+	hb2.Insert(3,"春风吹又生.");
+	hb2.Insert(4,"远芳侵古道,");
+	hb2.Insert(5,"晴翠接荒城.");
+	hb2.Insert(6,"又送王孙去,");
+	hb2.Insert(7,"萋萋满别情.");
+	hb2.Remove(0);
+	hb2.Remove(1);
+	hb2.Remove(2);
+	hb2.Remove(3);
+	hb2.Remove(4);
+	hb2.Remove(5);
+	hb2.Remove(6);
+	hb2.Remove(7);
 }
 int main(){
 	TestHashBucket();
