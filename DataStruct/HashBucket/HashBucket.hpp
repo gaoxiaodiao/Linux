@@ -4,6 +4,8 @@
 *创建时间:2017年04月19日 星期三 08时56分49秒
 *开发环境:Kali Linux/g++ v6.3.0
 ****************************************/
+#ifndef __HASHBUCKET_HPP__
+#define __HASHBUCKET_HPP__
 #include<vector>
 //哈希桶节点
 template<typename K,typename V>
@@ -42,6 +44,10 @@ public:
 			while(cur!=NULL){
 				Node* del = cur;
 				cur = cur->_next;
+#ifdef __HASHBUCKET_DEBUG__
+				//为了更直观的明白析构乱序问题,在此把index也打印出来
+				std::cout<<"\033[31m"<<del->_kv.first<<":"<<del->_kv.second<<"("<<i<<")"<<"\033[0m"<<std::endl;
+#endif
 				delete del;
 			}
 		}
@@ -82,7 +88,8 @@ void HashBucket<K,V,HashFunc>::_Check(){
 			}
 		}
 		//交换
-		_table.swap(tmp._table);
+		//_table.swap(tmp._table);
+		std::swap(_table,tmp._table);
 		std::swap(_size,tmp._size);
 	}
 }
@@ -106,6 +113,7 @@ HashBucket<K,V,HashFunc>::Find(const K &key){
 //插入
 template<typename K,typename V,typename HashFunc>
 bool HashBucket<K,V,HashFunc>::Insert(const K &key,const V &value){
+	_Check();
 	Node* ret = Find(key);
 	if(ret!=NULL){
 		//该key值已存在,返回false
@@ -116,6 +124,7 @@ bool HashBucket<K,V,HashFunc>::Insert(const K &key,const V &value){
 	//头插
 	newNode->_next = _table[index];
 	_table[index] = newNode;
+	++_size;
 	return true;
 }
 //删除
@@ -135,7 +144,11 @@ void HashBucket<K,V,HashFunc>::Remove(const K &key){
 				_table[index] = cur->_next;
 			}
 			//释放当前节点
+#ifdef __HASHBUCKET_DEBUG__
+			std::cout<<"\033[34m"<<"key="<<cur->_kv.first<<"被释放!"<<"\033[0m"<<std::endl;
+#endif
 			delete cur;
+			--_size;
 			return ;
 		}
 		parent = cur;
@@ -169,3 +182,4 @@ size_t HashBucket<K,V,HashFunc>::_GetPrimeSize(size_t size){
 	}
 	return size;
 }
+#endif
