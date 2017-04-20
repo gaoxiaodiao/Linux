@@ -12,7 +12,7 @@ public:
 	void Set(size_t value);		//设置某个位为1
 	void Reset(size_t value);	//设置某个位为0
 	bool Get(size_t value);		//获取某个位置的值
-public:
+private:
 	std::vector<char> _array;
 };
 //构造函数的实现
