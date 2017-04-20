@@ -35,8 +35,8 @@ void TestHashBucket(){
 	//问题2:再次开启gdb调试进去后发现,因为第二次扩容是容量变成了53,所以0到7的模53时,位置肯定不会在是0-7了,因此,就出现了乱序的问题.
 	//
 	*/
-	//测试删除
-	HashBucket<int,const char*> hb2;
+	//测试删除、迭代器
+	HashBucket<int,const char*> hb2(10);
 	hb2.Insert(0,"离离原上草,");
 	hb2.Insert(1,"一岁一枯荣.");
 	hb2.Insert(2,"野火烧不尽,");
@@ -45,6 +45,11 @@ void TestHashBucket(){
 	hb2.Insert(5,"晴翠接荒城.");
 	hb2.Insert(6,"又送王孙去,");
 	hb2.Insert(7,"萋萋满别情.");
+	HashBucket<int,const char*>::Iterator it = hb2.Begin();
+	while(it!=hb2.End()){
+		std::cout<<it->first<<":"<<it->second<<std::endl;
+		++it;
+	}
 	hb2.Remove(0);
 	hb2.Remove(1);
 	hb2.Remove(2);
