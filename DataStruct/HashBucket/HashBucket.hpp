@@ -7,6 +7,7 @@
 #ifndef __HASHBUCKET_HPP__
 #define __HASHBUCKET_HPP__
 #include<vector>
+#include<cassert>
 //哈希桶节点
 template<typename K,typename V>
 struct HashBucketNode{
@@ -18,6 +19,10 @@ struct HashBucketNode{
 		,_next(NULL){}
 };
 
+//前置声明
+template<typename K,typename V,typename HashFunc,typename Ptr,typename Ref>
+struct HashBucketIterator;
+
 //哈希算法
 template<typename K>
 struct HashFunc{
@@ -27,10 +32,15 @@ struct HashFunc{
 };
 
 //哈希桶
-template<typename K,typename V,typename HashFunc=HashFunc<K>>
+template<typename K,typename V,typename HashFunc=HashFunc<K> >
 class HashBucket{
+	
 public:
 	typedef HashBucketNode<K,V> Node;
+	typedef HashBucketIterator<K, V, HashFunc, std::pair<K,V>*, std::pair<K,V> & > Iterator;
+	typedef HashBucketIterator<K,V,HashFunc,const std::pair<K,V> * ,const std::pair<K,V>& > ConstIterator;
+	friend Iterator;
+	friend ConstIterator;
 public:
 	//构造函数
 	HashBucket(const size_t size = 0)
@@ -53,9 +63,20 @@ public:
 		}
 	}
 public:
+	/////////////公用接口///////////////
 	bool Insert(const K &key,const V &value);	//简化返回值
 	Node* Find(const K &key);					//简化返回值
 	void Remove(const K &key);
+	Iterator Begin(){
+		for(int i=0; i<_table.size(); ++i){
+			if(_table[i]!=NULL){
+				return Iterator(this,_table[i]);
+			}
+		}
+	}
+	Iterator End(){
+		return Iterator(this,NULL);
+	}
 protected:
 	void _Check();
 	size_t _HashFunc(const K&);
@@ -182,4 +203,132 @@ size_t HashBucket<K,V,HashFunc>::_GetPrimeSize(size_t size){
 	}
 	return size;
 }
+/*
+template<typename K,typename V,typename HashFunc>
+typename HashBucket<K,V,HashFunc>::Iterator HashBucket<K,V,HashFunc>::Begin(){
+	Node *ret = NULL;
+	for(int i=0; i<_table.size(); ++i){
+		if(_table[i]!=NULL){
+			ret = _table[i];
+			break;
+		}
+	}
+	return Iterator(this,ret);
+}
+
+template<typename K,typename V,typename HashFunc>
+typename HashBucket<K,V,HashFunc>::Iterator HashBucket<K,V,HashFunc>::End(){
+	return Iterator(this,NULL);
+}
+*/
+//哈希桶简单版的迭代器
+template<typename K,typename V,typename HashFunc,typename Ptr,typename Ref>
+struct HashBucketIterator{
+	typedef HashBucketNode<K,V> Node;
+	typedef HashBucketIterator<K,V,HashFunc,Ptr,Ref> Self;
+	//成员
+	const HashBucket<K,V,HashFunc> _hb;	//哈希表
+	Node * _node;					//当前节点
+	//构造函数
+	HashBucketIterator(HashBucket<K,V,HashFunc>hb,Node* node)
+		:_hb(hb)
+		,_node(node){}
+	//== !=
+	bool operator!=(const Self & s)const{
+		return _node!=s._node;
+	}
+	bool operator==(const Self &s)const{
+		return (!(operator!=(s)));
+	}
+	//++
+	Self& operator++(){
+		_node = _Next();
+		return *this;
+	}
+	Self operator++(int){
+		Self ret(_hb,_node);
+		_node = _Next();
+		return ret;
+	}
+	//--
+	Self &operator--(){
+		_node = _Prev;
+		return *this;
+	}
+	Self operator--(int){
+		Self ret(_hb,_node);
+		_node = _Prev();
+		return ret;
+	}
+	//*
+	Ref operator*(){
+		return *_node;
+	}
+	//->
+	Ptr operator->(){
+		return &(operator*());
+	}
+protected:
+	//++
+	Node* _Next(){
+		if(_node==NULL){
+			//当前哈希桶已经走完.
+			assert(false);
+			return NULL;
+		}
+		Node *next = _node->_next;
+		if(next==NULL){
+			//说明当前桶内_node已经是最后一个节点,
+			//因此需要到其他桶中查询
+			size_t index = _hb->_HashFunc(_node->_kv.first) + 1;
+			for(; index<_hb->_table.size(); ++index){
+				Node *cur = _hb->_table[index];
+				if(cur!=NULL){
+					//找到之后,修改next的值,然后跳出循环
+					next = cur;
+					break;
+				}
+			}
+		}
+		return next;
+	}
+	//--
+	//先求出下标,判断当前节点是不是桶中首元素
+	//如果不是首元素,遍历到当前节点,返回.
+	//如果是首元素,到下标-1的桶中去找,然后循环此过程
+	Node *_Prev(){
+		if(_node==NULL){
+			//当前哈希表已经走完
+			assert(false);
+			return NULL;
+		}
+		Node *prev = NULL;
+		size_t index = _hb->_HashFunc(_node->_kv.first);
+		if(_node!=_hb->_table[index]){
+			//当前节点不是桶的首元素,遍历当前桶
+			Node *cur = _hb->_table[index];
+			assert(cur);		//桶中首元素为空,程序绝对有问题了!
+			while(cur!=NULL&&cur!=_node){
+				prev = cur;
+				cur = cur->_next;
+			}
+			return prev;
+		}
+			//当前是桶中第一个元素,去前一个桶中找
+		for(int i=index-1; i>=0; --i){
+			Node *cur = _hb->_table[index];
+			//如果前一个桶不为空,那么就是该桶最后一个元素
+			while(cur!=NULL){
+				prev = cur;
+				cur = cur->_next;
+			}
+			if(prev!=NULL){
+				//说明已经找到前一个节点
+				break;
+			}
+		}
+		return prev;
+	}
+};
+
 #endif
