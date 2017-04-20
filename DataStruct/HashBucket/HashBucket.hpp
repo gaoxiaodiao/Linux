@@ -146,6 +146,9 @@ bool HashBucket<K,V,HashFunc>::Insert(const K &key,const V &value){
 	newNode->_next = _table[index];
 	_table[index] = newNode;
 	++_size;
+#ifdef __HASHBUCKET_DEBUG__
+	std::cout<<"["<<index<<"]"<<key<<":"<<value<<std::endl;
+#endif
 	return true;
 }
 //删除
@@ -179,7 +182,7 @@ void HashBucket<K,V,HashFunc>::Remove(const K &key){
 //哈希算法
 template<typename K,typename V,typename HashFunc>
 size_t HashBucket<K,V,HashFunc>::_HashFunc(const K& key){
-	return HashFunc()(key)&_table.size();
+	return HashFunc()(key)%_table.size();
 }
 //素数表
 template<typename K,typename V,typename HashFunc>
@@ -227,10 +230,10 @@ struct HashBucketIterator{
 	typedef HashBucketNode<K,V> Node;
 	typedef HashBucketIterator<K,V,HashFunc,Ptr,Ref> Self;
 	//成员
-	const HashBucket<K,V,HashFunc> _hb;	//哈希表
+	HashBucket<K,V,HashFunc> *_hb;	//哈希表
 	Node * _node;					//当前节点
 	//构造函数
-	HashBucketIterator(HashBucket<K,V,HashFunc>hb,Node* node)
+	HashBucketIterator(HashBucket<K,V,HashFunc>* hb,Node* node)
 		:_hb(hb)
 		,_node(node){}
 	//== !=
@@ -262,7 +265,7 @@ struct HashBucketIterator{
 	}
 	//*
 	Ref operator*(){
-		return *_node;
+		return _node->_kv;
 	}
 	//->
 	Ptr operator->(){
