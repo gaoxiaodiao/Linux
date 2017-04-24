@@ -6,8 +6,9 @@
 ****************************************/
 #ifndef __HEAP_H__
 #define __HEAP_H__
+#include<functional>
 #include<vector>
-template<typename T,typename Com = std::Less<T>>
+template<typename T,typename Com = std::less<T>>
 class Heap{
 	public:
 		Heap(T arr[],int size);	//构造函数
@@ -15,12 +16,89 @@ class Heap{
 		void Push(const T&);	//入数据
 		void Pop();				//出数据
 	protected:
-		void AdjustUp(int);		//向上调整
-		void AdjustDown(int);	//向下调整
+		void _AdjustUp(int);		//向上调整
+		void _AdjustDown(int);	//向下调整
 	private:
 		Heap(const Heap& );
 		Heap& operator=(const Heap&);
 	private:
 		std::vector<T> _heap;
 };
+
+//构造函数:建堆
+//时间复杂度O(N*lgN)
+template<typename T,typename Com = std::less<T>>
+Heap::Heap(T arr[],int size)
+	:_heap(arr,arr+size){
+	//从最后一个非叶子节点开始,不断的向下调整
+	for(int i=(size-2)/2; i>=0; --i){
+		_AdjustDown(i);
+	}
+}
+
+//向下调整
+//时间复杂度O(logN)
+template<typename T,typename Com = std::less<T>>
+void Heap::_AdjustDown(int index){
+	int parent = index;
+	int child = parent*2;
+	while(child<_heap.size()){
+		//找出大/小孩子
+		if(child+1<_heap.size() &&
+				Com(_heap[child],_heap[child+1])){
+			child++;
+		}
+		//找出根节点
+		if(Com(_heap[parent],_heap[child])){
+			//当前根节点不满足条件,进行交换
+			//交换后,继续向下调整
+			std::swap(_heap[parent],_heap[child]);
+			parent = child;
+			child = parent*2;
+		}else{
+			//当前已满足最大/小堆,结束调整
+			break;
+		}
+	}
+}
+
+//向上调整
+//时间复杂度O(lgN)
+template<typename T,typename Com = std::less<T>>
+void Heap::_AdjustUp(int index){
+	int parent = index;
+	int child = parent*2;
+	while(parent>=0){
+		//两个孩子中找较大/小的,进行交换
+		if(child+1<_heap.size() &&
+				Com(_heap[child+1],_heap[child])){
+			child++;
+		}
+		//孩子与父亲间找出较大/小的,进行交换
+		if(Com(_heap[parent],_heap[child])){
+			//交换后,继续向上调整
+			std::swap(_heap[parent],_heap[child]);
+			child = parent;
+			parent = (child-1)/2;
+		}else{
+			//不需要交换,已经成为堆
+			break;
+		}
+	}
+}
+
+//插入
+template<typename T,typename Com = std::less<T>>
+void Heap::Push(const T& e){
+	_heap.push_back(e);
+	_AdjustUp((_heap.size()-2)/2);
+}
+
+//删除
+template<typename T,typename Com = std::less<T>>
+void Heap::Pop(){
+	std::swap(_heap[0],_heap[_heap.size()-1]);
+	_AdjustDown(0);
+}
+
 #endif
