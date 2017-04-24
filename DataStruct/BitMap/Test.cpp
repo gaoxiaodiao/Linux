@@ -5,7 +5,7 @@
 *开发环境:Kali Linux/g++ v6.3.0
 ****************************************/
 #include<iostream>
-#include"BitMap.hpp"
+#include"BitMap.h"
 void TestBitMap(){
 	BitMap bm(30);
 	//输出
