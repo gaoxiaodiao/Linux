@@ -117,9 +117,20 @@ void Heap<T,Com>::Pop(){
 //判断是是否为堆
 template<typename T,typename Com>
 bool Heap<T,Com>::CheckIsHeap(){
-	return _CheckIsHeap(0);
+	for(int i=(_heap.size()-2)/2; i>=0; --i){
+		int parent = i;
+		int child = 2*i+1;
+		if(child+1<_heap.size()&&
+				Com()(_heap[child+1],_heap[child])){
+			child++;
+		}
+		if(!Com()(_heap[parent],_heap[child])){
+			return false;
+		}
+	}
+	return true;
 }
-
+/*
 template<typename T,typename Com>
 bool Heap<T,Com>::_CheckIsHeap(int index){
 	if(index>_heap.size()){
@@ -135,4 +146,5 @@ bool Heap<T,Com>::_CheckIsHeap(int index){
 	}
 	return false;
 }
+*/
 #endif
