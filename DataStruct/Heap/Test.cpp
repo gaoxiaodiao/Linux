@@ -12,25 +12,25 @@ void TestHeap(){
 	int size = sizeof(arr)/sizeof(*arr);
 	//小堆
 	Heap<int> h1(arr,size);
-	cout<<h1.CheckIsHeap()<<endl;
 	h1.Print(); 
+	cout<<h1.CheckIsHeap()<<endl;
 	h1.Pop();
-	cout<<h1.CheckIsHeap()<<endl;
 	h1.Print();
+	cout<<h1.CheckIsHeap()<<endl;
 	h1.Push(5);
-	cout<<h1.CheckIsHeap()<<endl;
 	h1.Print();
+	cout<<h1.CheckIsHeap()<<endl;
 
 	//大堆
 	Heap<int,std::greater<int>> h2(arr,size);
-	cout<<h1.CheckIsHeap()<<endl;
 	h2.Print();	
+	cout<<h2.CheckIsHeap()<<endl;
 	h2.Pop();
-	cout<<h1.CheckIsHeap()<<endl;
 	h2.Print();	
+	cout<<h2.CheckIsHeap()<<endl;
 	h2.Push(20);
-	cout<<h1.CheckIsHeap()<<endl;
 	h2.Print();	
+	cout<<h2.CheckIsHeap()<<endl;
 }
 int main(){
 	TestHeap();
