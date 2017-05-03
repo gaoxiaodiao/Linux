@@ -39,7 +39,7 @@ void SelectSort(int arr[],int size){
 		arr[i] = min;
 		if(i==maxPos){
 			maxPos = minPos;
-			max = min;
+			max = arr[minPos];
 		}
 		arr[maxPos] = arr[size-i-1];
 		arr[size-i-1] = max;
