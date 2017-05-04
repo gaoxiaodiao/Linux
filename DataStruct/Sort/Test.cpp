@@ -16,14 +16,23 @@ void PrintArr(int arr[],int size){
 	}
 	cout<<endl;
 }
+void TestSort(pFun2 Sort){
+	int arr[]={1,3,5,7,9,2,4,6,8,0};
+	Sort(arr,0,sizeof(arr)/sizeof(*arr)-1);
+	PrintArr(arr,sizeof(arr)/sizeof(*arr));
+}
+
 void TestSort(pFun1 Sort){
 	int arr[]={1,3,5,7,9,2,4,6,8,0};
 	Sort(arr,sizeof(arr)/sizeof(*arr));
 	PrintArr(arr,sizeof(arr)/sizeof(*arr));
 }
 int main(){
-//	TestSort(BubbleSort);
-//	TestSort(SelectSort);
-	TestSort(InsertSort);
+	//TestSort(BubbleSort);
+	//TestSort(SelectSort);
+	//TestSort(InsertSort);
+	TestSort(HeapSort);
+	TestSort(ShellSort);
+	TestSort(QuickSort);
 	return 0;
 }
