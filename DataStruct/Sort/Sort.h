@@ -1,9 +1,181 @@
-/**************************************
+////////////////////////////////////
+//文件说明:各种排序算法总结
+//作者:高小调
+//创建时间:2017年05月28日 星期日 17时23分18秒
+//开发环境:Kali Linux/g++ v6.3.0
+////////////////////////////////////
+#ifndef __SORT_H__
+#define __SORT_H__
+#include<iostream>
+using std::swap;
+
+//快速排序1:左右指针法
+void QuickSort1(int arr[],int left,int right){
+	if(left>=right){
+		return ;
+	}
+	int low = left;
+	int high = right;
+	int key = arr[right];
+	while(low<high){
+		while(low<high && arr[low] < key){
+			++low;
+		}
+		while(low<high && arr[high] > key){
+			--high;
+		}
+		swap(arr[low],arr[high]);
+	}
+	arr[low] = key;
+
+	QuickSort1(arr,left,low-1);
+	QuickSort1(arr,low+1,right);
+}
+
+//快速排序2:挖坑法
+void QuickSort2(int arr[],int left,int right){
+	if(left >= right){
+		return ;
+	}
+	int low = left;
+	int high = right;
+	int key = arr[right];
+	while(low<high){
+		while(low<high && arr[low] < key){
+			++low;
+		}
+		arr[high] = arr[low];
+		while(low<high && arr[high] > key){
+			--high;
+		}
+		arr[low] = arr[high];
+	}
+	arr[low] = key;
+	QuickSort2(arr,left,low-1);
+	QuickSort2(arr,low+1,right);
+}
+
+//快速排序3:前后指针法
+void QuickSort3(int arr[],int left,int right){
+	if(left>=right){
+		return ;
+	}
+	int cur = left;
+	int prev = cur-1;
+	while(cur<=right){
+		if()
+	}
+
+}
+//选择排序优化版
+void SelectSort(int *arr,int left,int right){
+	while(left<right){
+		int minIndex = left;
+		int maxIndex = right;
+		for(int i=left; i<=right; ++i){
+			if(arr[maxIndex] < arr[i]){
+				maxIndex = i;
+			}
+			if(arr[minIndex] > arr[i]){
+				minIndex = i;
+			}
+		}
+		swap(arr[left],arr[minIndex]);
+		if(maxIndex == left){
+			maxIndex = minIndex;
+		}
+		swap(arr[right],arr[maxIndex]);
+		left++;
+		right--;
+	}
+
+}
+//堆排序
+void AdjustDown(int arr[],int size,int pos){
+	int parent = pos;
+	int child = parent*2+1;
+	while(child<size){
+		if(child+1<size && arr[child+1] > arr[child] ){
+			child++;
+		}
+		if(arr[child] > arr[parent]){
+			swap(arr[child],arr[parent]);
+			parent = child;
+			child = parent*2+1;
+		}else{
+			break;
+		}
+	}
+}
+void HeapSort(int arr[],int size){
+	//建堆
+	for(int i=(size-2)/2; i>=0; --i){
+		AdjustDown(arr,size,i);
+	}
+	//选择
+	int right = size-1;
+	while(right>0){
+		swap(arr[0],arr[right]);
+		AdjustDown(arr,right,0);
+		right--;
+	}
+}
+
+
+//冒泡排序优化版
+void BubbleSort(int *arr,int left,int right){
+	bool flag = true;
+	for(int i=left; flag&&i<right; ++i){
+		flag = false;
+		for(int j = right; j>i; --j){
+			if(arr[j-1]>arr[j]){
+				swap(arr[j-1],arr[j]);
+				flag = true;
+			}
+		}
+	}
+}
+
+
+//插入排序
+void InsertSort(int arr[],int left,int right){
+	for(int i=left+1;i<=right;++i){
+		int end = i-1;
+		int key = arr[i];
+		while(end>=0 && arr[end] > key){
+			arr[end+1] = arr[end];
+			end--;
+		}
+		arr[end+1] = key;
+	}
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***************************************
 *文件说明:各种排序算法总结
 *作者:高小调
 *创建时间:2017年05月03日 星期三 17时53分29秒
 *开发环境:Kali Linux/g++ v6.3.0
 ****************************************/
+/*
 //冒泡排序优化
 void BubbleSort(int arr[],int size){
 	bool flag = true;
@@ -137,3 +309,4 @@ void ShellSort(int arr[],int size){
 		}
 	}
 }
+*/
