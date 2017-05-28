@@ -62,10 +62,17 @@ void QuickSort3(int arr[],int left,int right){
 	}
 	int cur = left;
 	int prev = cur-1;
-	while(cur<=right){
-		if()
+	int key = right;
+	while(cur!=right){
+		if(arr[cur] < arr[key] && arr[++prev] != arr[cur]){
+			swap(arr[cur],arr[prev]);
+		}
+		++cur;
 	}
+	swap(arr[++prev],arr[cur]);
 
+	QuickSort3(arr,left,prev-1);
+	QuickSort3(arr,prev+1,right);
 }
 //选择排序优化版
 void SelectSort(int *arr,int left,int right){
