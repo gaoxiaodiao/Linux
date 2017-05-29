@@ -1,4 +1,139 @@
 ////////////////////////////////////
+//文件说明:排序再复习
+//作者:高小调
+//创建时间:2017年05月29日 星期一 08时20分04秒
+//开发环境:Kali Linux/g++ v6.3.0
+////////////////////////////////////
+#ifndef __SORT_H__
+#define __SORT_H__
+#include<iostream>
+using std::swap;
+void QuickSort1(int *arr,int left,int right){
+	if(left>=right){
+		return ;
+	}
+	int low = left;
+	int high = right;
+	int key = right;
+	while(low<high){
+		while(low<high && arr[low] <= arr[key]){
+			++low;
+		}
+		while(low<high && arr[high] >= arr[key]){
+			--high;
+		}
+		if(low<high){
+			swap(arr[low],arr[high]);
+		}
+	}
+	swap(arr[low],arr[key]);
+
+	QuickSort1(arr,left,low-1);
+	QuickSort1(arr,low+1,right);
+}
+
+void QuickSort2(int *arr,int left,int right){
+	if(left>=right){
+		return ;
+	}
+	int low = left;
+	int high = right;
+	int key = arr[right];
+	while(low<high){
+		while(low<high && arr[low]<=key){
+			++low;
+		}
+		if(low<high)
+			arr[high] = arr[low];
+		while(low<high && arr[high]>=key){
+			--high;
+		}
+		if(low<high)
+			arr[low] = arr[high];
+	}
+	arr[low] = key;
+
+	QuickSort2(arr,left,low-1);
+	QuickSort2(arr,low+1,right);
+}
+
+void QuickSort3(int *arr,int left,int right){
+	if(left>=right){
+		return ;
+	}
+	int cur = left;
+	int prev = cur-1;
+	int key = right;
+	while(cur!=right){
+		if(arr[cur]<arr[key] && arr[++prev] != arr[cur]){
+			swap(arr[cur],arr[prev]);
+		}
+		++cur;
+	}
+	swap(arr[++prev],arr[cur]);
+
+	QuickSort3(arr,left,prev-1);
+	QuickSort3(arr,prev+1,right);
+}
+
+
+void BubbleSort(int *arr,int size){
+	bool flag = true;
+	for(int i=0; flag&&i<size; ++i){
+		flag = false;
+		for(int j=size-1; j>i; --j){
+			if(arr[j-1] > arr[j]){
+				swap(arr[j-1],arr[j]);
+				flag = true;
+			}
+		}
+	}
+}
+
+void SelectSort(int *arr,int size){
+	int left = 0;
+	int right = size-1;
+	while(left<right){
+		int max = right;
+		int min = left;
+		for(int i=left; i<=right; ++i){
+			if(arr[i] > arr[max]){
+				max = i;
+			}
+			if(arr[i] < arr[min]){
+				min = i;
+			}
+		
+		}
+		swap(arr[min],arr[left]);
+		if(max == left){
+			max = min;
+		}
+		swap(arr[max],arr[right]);
+		left++;
+		right--;
+	}
+}
+
+void InsertSort(int *arr,int size){
+	for(int i=1; i<size; ++i){
+		int end = i-1;
+		int key = arr[i];
+		while(end>=0 && arr[end]>key){
+			arr[end+1] = arr[end];
+			end--;
+		}
+		arr[end+1] = key;
+	}
+}
+
+
+#endif
+
+
+
+/*
+////////////////////////////////////
 //文件说明:各种排序算法总结
 //作者:高小调
 //创建时间:2017年05月28日 星期日 17时23分18秒
@@ -158,23 +293,7 @@ void InsertSort(int arr[],int left,int right){
 }
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 /***************************************
 *文件说明:各种排序算法总结
