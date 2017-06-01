@@ -19,7 +19,7 @@ int main(){
 	char buff[1024]={0};
 	while(1){
 		ssize_t s = read(0,buff,sizeof(buff));
-		buff[s] = 0;
+		buff[s-1] = 0;
 		write(fd,buff,strlen(buff));
 	}
 	return 0;
