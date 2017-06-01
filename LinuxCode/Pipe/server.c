@@ -12,7 +12,7 @@
 int main(){
 	if(mkfifo("./myfifo",S_IFIFO|0666)==-1){
 		perror("mkfifo");
-		return 1;
+		//return 1;
 	}
 	int fd = open("./myfifo",O_RDONLY);
 	if(fd==-1){
