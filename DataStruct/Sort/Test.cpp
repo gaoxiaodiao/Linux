@@ -28,11 +28,13 @@ void TestSort(pFun1 Sort){
 	PrintArr(arr,sizeof(arr)/sizeof(*arr));
 }
 int main(){
-	//TestSort(BubbleSort);
-	//TestSort(SelectSort);
-	//TestSort(InsertSort);
+	TestSort(BubbleSort);
+	TestSort(SelectSort);
+	TestSort(InsertSort);
 	TestSort(HeapSort);
 	TestSort(ShellSort);
-	TestSort(QuickSort);
+	TestSort(QuickSort1);
+	TestSort(QuickSort2);
+	TestSort(QuickSort3);
 	return 0;
 }
