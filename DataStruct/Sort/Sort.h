@@ -97,6 +97,30 @@ void QuickSort2(int *arr,int left,int right){
 	QuickSort2(arr,left,low-1);
 	QuickSort2(arr,low+1,right);
 }
+/*
+//前后指针法
+void QuickSort3(int *arr,int left,int right){
+	if(left>=right){
+		return ;
+	}
+	int prev = left;
+	int cur = prev+1;
+
+	int key = right;
+
+	while(cur!=right){
+		if(arr[cur] < arr[key] && arr[++prev]!=arr[cur]){
+			swap(arr[cur],arr[prev]);
+		}
+		++cur;
+	}
+
+	swap(arr[cur],arr[++prev]);
+
+	QuickSort3(arr,left,prev-1);
+	QuickSort3(arr,prev+1,right);
+}
+*/
 //前后指针法
 void QuickSort3(int *arr,int left,int right){
 	if(left>=right){
@@ -106,7 +130,7 @@ void QuickSort3(int *arr,int left,int right){
 	int prev = cur-1;
 	int key = right;
 	while(cur!=right){
-		if(arr[cur] < arr[key] && arr[++prev]!=arr[cur]){
+		if(arr[cur] > arr[key] && ++prev!=cur){
 			swap(arr[cur],arr[prev]);
 		}
 		++cur;
@@ -116,9 +140,6 @@ void QuickSort3(int *arr,int left,int right){
 	QuickSort3(arr,left,prev-1);
 	QuickSort3(arr,prev+1,right);
 }
-
-
-
 
 void BubbleSort(int *arr,int size){
 	bool flag = true;

@@ -13,10 +13,6 @@ typedef struct Node{
 	struct Node* next;
 }Node_t,*Node_p,**Node_pp;
 
-void InitList(Node_pp head){
-	*head = BuyNode(0);
-}
-
 static Node_p BuyNode(int data){
 	Node_p ret = (Node_p)malloc(sizeof(Node_t));
 	if(ret==NULL){
@@ -28,6 +24,11 @@ static Node_p BuyNode(int data){
 	return ret;
 }
 
+void InitList(Node_pp head){
+	*head = BuyNode(0);
+}
+
+
 void PushFront(Node_p head,int data){
 	Node_p Node = BuyNode(data);
 	Node->next = head->next;
@@ -35,7 +36,7 @@ void PushFront(Node_p head,int data){
 }
 
 int IsEmpty(Node_p head){
-	return head->next==NULL?0:1;
+	return head->next==NULL?1:0;
 }
 
 void PopFront(Node_p head,int *data){
@@ -50,19 +51,19 @@ void PopFront(Node_p head,int *data){
 void Destroy(Node_pp head){
 	int data = 0;
 	while(!IsEmpty(*head)){
-		PopFront(head,data);
+		PopFront(*head,&data);
 	}
 	free(*head);
 	*head = NULL;
 }
 
 void ShowList(Node_p head){
-	Node_p cur = head;
+	Node_p cur = head->next;
 	while(cur!=NULL){
 		printf("%d->",cur->value);
 		cur = cur->next;
 	}
-	printf("\n");
+	printf("NULL\n");
 }
 
 #endif

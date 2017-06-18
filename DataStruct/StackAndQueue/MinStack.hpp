@@ -1,57 +1,39 @@
-/**************************************
-*文件说明:Push、Pop、Min操作均为O(1)的栈
-*作者:高小调
-*创建时间:2017年04月17日 星期一 18时48分35秒
-*开发环境:Kali Linux/g++ v6.3.0
-****************************************/
+////////////////////////////////////
+//文件说明:MinStack.hpp
+//作者:高小调
+//创建时间:2017年06月18日 星期日 08时38分55秒
+//开发环境:Kali Linux/g++ v6.3.0
+////////////////////////////////////
+#pragma once
 #include<stack>
-#include<cassert>
+using std::stack;
 template<typename T>
 class MinStack{
 public:
-	//构造、拷贝构造、赋值运算符重载、析构略
-public:
-	void Push(const T &e);	//入栈
-	void Pop();				//出栈
-	const T& Min();			//获取最小值
-	bool Empty();			//判断是否为空(测试使用)
+	void Push(const T& e){
+		if(minStack.empty() || minStack.top() >= e){
+			minStack.push(e);
+		}
+		dataStack.push(e);
+	}
+	void Pop(){
+		if(!dataStack.empty()){
+			if(!minStack.empty() && dataStack.top()==minStack.top()){
+				minStack.pop();
+			}
+			dataStack.pop();
+		}
+	}
+	int Min(){
+		if(!minStack.empty()){
+			return minStack.top();
+		}
+		return -9999999;
+	}
+	bool Empty(){
+		return dataStack.empty();
+	}
 private:
-	std::stack<T> _s;		//栈
-	std::stack<T> _min;		//最小值栈
+	stack<T> dataStack;
+	stack<T> minStack;
 };
-
-//入栈
-template<typename T>
-void MinStack<T>::Push(const T &e){
-	if(_min.empty() || _min.top() >= e){
-		_min.push(e);
-	}
-	_s.push(e);
-
-}
-
-//出栈
-template<typename T>
-void MinStack<T>::Pop(){
-	if(_s.empty()){
-		assert(false);
-	}
-	if(_s.top() == _min.top()){
-		_min.pop();
-	}
-	_s.pop();
-}
-
-//获取当前栈中元素的最小值
-template<typename T>
-const T &MinStack<T>::Min(){
-	if(_min.empty()){
-		assert(false);
-	}
-	return _min.top();
-}
-
-template<typename T>
-bool MinStack<T>::Empty(){
-	return _s.empty();
-}
