@@ -1,5 +1,5 @@
-signal:signal.c
+pending:pending.c
 	gcc -o $@ $^
 .PHONY:clean
 clean:
-	rm signal
+	rm -f pending
