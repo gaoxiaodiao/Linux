@@ -35,6 +35,28 @@ void PrintLinkList(Node_p head){
 	cout<<endl;
 }
 
+
+void QuickSort(Node_p head,Node_p tail){
+	if(head==NULL || tail==NULL){
+		return; 
+	}
+	Node_p prev = NULL;
+	Node_p cur = head;
+	while(cur!=tail){
+		Node_p prevNext = prev==NULL?cur:prev->next;
+		if(cur->val < tail->val && (prev = prevNext)!=cur){
+			swap(prev->val,cur->val);
+		}
+		cur = cur->next;
+	}
+	Node_p pprev = prev;
+	prev = prev==NULL?cur:prev->next;
+	swap(prev->val,cur->val);
+	PrintLinkList(head);
+	QuickSort(head,pprev);
+	QuickSort(prev->next,tail);
+}
+
 Node_p FindNode(Node_p head,int value){
 	assert(head);
 
@@ -119,58 +141,6 @@ Node_p CopyMutiLinkList(Node_p head){
 		cur = cur->next;
 	}
 	return retHead;
-
-
-
-
-
-
-/*
-	Node_p cur = head;
-	//拷贝next,放在后面
-	while(cur!=NULL){
-		Node_p tmp = new Node_t(cur->val);
-		tmp->next = cur->next;
-		cur->next = tmp;
-		cur = tmp->next;
-	}
-	//拷贝sibling
-	Node_p prev = head;			//旧的复杂链表
-	cur = head->next;	//新的复杂链表
-	while(cur!=NULL&&prev!=NULL){
-		cur->sibling = prev->sibling==NULL?NULL:prev->sibling->next;
-		prev = prev->next;
-		if(prev==NULL){
-			break;
-		}
-		prev = prev->next;
-
-		cur = cur->next;
-		if(cur==NULL){
-			break;
-		}
-		cur = cur->next;
-	}
-
-	//分离原复杂链表与拷贝复杂链表
-	// 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 
-	Node_p retHead = head->next;
-	Node_p retCur = retHead;
-	Node_p oriCur = head;
-	cur = head;
-	for(int i=1;cur!=NULL;++i){
-		if(i%2==0){
-			retCur->next = cur;
-			retCur = retCur->next;
-		}else{
-			oriCur->next = cur->next;
-			oriCur = oriCur->next;
-		}
-		cur = cur->next;
-	}
-	return retCur;
-*/
-	return NULL;
 }
 
 Node_p HasCircle(Node_p head){

@@ -220,8 +220,28 @@ void Test13(){
 	cout<<endl;
 	PrintMutiLinkList(copyHead);
 }
+//快速排序
+void Test14(){
+	Node_p head = NULL;
+	Node_p head2 = NULL;
+	InitLinkList(&head,18,0,3);
+	InitLinkList(&head2,21,36,3);
+	PrintLinkList(head);
+	Node_p tail = head;
+	while(tail->next!=NULL){
+		tail = tail->next;
+	}
+	tail->next = head2;
+	tail = head2;
+	while(tail->next!=NULL){
+		tail = tail->next;
+	}
+	QuickSort(head,tail);
+	PrintLinkList(head);
+}
 int main(){
-	Test13();
+	Test14();
+	//Test13();
 	//Test12();
 	//Test11();
 	//Test10();

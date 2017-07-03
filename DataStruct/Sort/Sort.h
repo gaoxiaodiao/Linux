@@ -1,9 +1,188 @@
 #ifndef __SORT_H__
+
+#define __SORT_H__
+//2017-07-03
+#include<iostream>
+#include<cassert>
+using std::swap;
+void AdjustDown(int *arr,int size,int index){
+	assert(arr&&size>0);
+	int parent = index;
+	int child = parent*2+1;
+	while(child<size){
+		if(child+1<size && arr[child+1] > arr[child]){
+			++child;
+		}
+		if(arr[child] > arr[parent]){
+			swap(arr[child],arr[parent]);
+			parent = child;
+			child = parent*2+1;
+		}else{
+			break;
+		}
+	}
+}
+void HeapSort(int *arr,int size){
+	assert(arr&&size>0);
+	for(int i=(size-2)/2; i>=0; --i){
+		AdjustDown(arr,size,i);
+	}
+	for(int i=1; i<size; ++i){
+		swap(arr[0],arr[size-i]);
+		AdjustDown(arr,size-i,0);
+	}
+}
+
+
+
+
+void InsertSort(int *arr,int size){
+	assert(arr&&size>0);
+	for(int i=1; i<size; ++i){
+		int end = i-1;
+		int key = arr[i];
+		while(end>=0 && arr[end] > key){
+			arr[end+1] = arr[end];
+			end--;
+		}
+		arr[end+1] = key;
+	}
+}
+void ShellSort(int *arr,int size){
+	assert(arr&&size>0);
+	int gap = size;
+	while(gap>1){
+		gap = gap/3+1;
+		for(int i=gap; i<size; ++i){
+			int end = i-gap;
+			int key = arr[i];
+			while(end>=0 && arr[end] > key){
+				arr[end+gap] = arr[end];
+				end-=gap;
+			}
+			arr[end+gap] = key;
+		}
+	}
+}
+
+void BubbleSort(int *arr,int size){
+	assert(arr&&size>0);
+	bool flag = true;
+	for(int i=0; flag&&i<size; ++i){
+		flag = false;
+		for(int j=size-1; j>i; --j){
+			if(arr[j-1] > arr[j]){
+				swap(arr[j-1],arr[j]);
+				flag = true;
+			}
+		}
+	}
+}
+
+void SelectSort(int *arr,int size){
+	assert(arr&&size>0);
+	int left = 0;
+	int right = size-1;
+	while(left<right){
+		int max = right;
+		int min = left;
+		for(int i=left; i<=right; ++i){
+			if(arr[max] < arr[i]){
+				max = i;
+			}
+			if(arr[min] > arr[i]){
+				min = i;
+			}
+		}
+		swap(arr[min],arr[left]);
+		if(max == left){
+			max = min;
+		}
+		swap(arr[max],arr[right]);
+
+		left++;
+		right--;
+	}
+}
+//左右指针法
+void QuickSort1(int *arr,int left,int right){
+	assert(arr);
+	if(left>=right){
+		return ;
+	}
+	int low = left;
+	int high = right;
+	int key = right;
+	while(low<high){
+		while(low<high && arr[low] <= arr[key]){
+			++low;
+		}
+		while(low<high && arr[high] >= arr[key]){
+			--high;
+		}
+		if(low<high){
+			swap(arr[low],arr[high]);
+		}
+	}
+	swap(arr[low],arr[key]);
+
+	QuickSort1(arr,left,low-1);
+	QuickSort1(arr,low+1,right);
+}
+//挖坑法
+void QuickSort2(int *arr,int left,int right){
+	assert(arr);
+	if(left>=right){
+		return ;
+	}
+	int low = left;
+	int high = right;
+	int key = arr[right];
+	while(low<high){
+		while(low<high && arr[low] <= key){
+			++low;
+		}
+		arr[high] = arr[low];
+		while(low<high && arr[high] >= key){
+			--high;
+		}
+		arr[low] = arr[high];
+	}
+	arr[low] = key;
+
+	QuickSort2(arr,left,low-1);
+	QuickSort2(arr,low+1,right);
+}
+
+void QuickSort3(int *arr,int left,int right){
+	assert(arr);
+	if(left>=right){
+		return ;
+	}
+	int prev = left-1;
+	int cur = left;
+	int key = right;
+	while(cur!=right){
+		if(arr[cur] < arr[key] && ++prev!=cur){
+			swap(arr[prev],arr[cur]);
+		}
+		++cur;
+	}
+	swap(arr[++prev],arr[cur]);
+	QuickSort3(arr,left,prev-1);
+	QuickSort3(arr,prev+1,right);
+}
+
+
+
+
+#endif
+
+/*
+#ifndef __SORT_H__
 #define __SORT_H__
 #include<iostream>
 using std::swap;
-
-
 void ShellSort(int *arr,int size){
 	int gap = size;
 	while(gap>1){
@@ -19,7 +198,6 @@ void ShellSort(int *arr,int size){
 		}
 	}
 }
-
 void AdjustDown(int *arr,int size,int index){
 	int parent = index;
 	int child = parent*2+1;
@@ -36,7 +214,6 @@ void AdjustDown(int *arr,int size,int index){
 		}
 	}
 }
-
 void HeapSort(int *arr,int size){
 	for(int i=(size-2)/2; i>=0; --i){
 		AdjustDown(arr,size,i);
@@ -97,7 +274,7 @@ void QuickSort2(int *arr,int left,int right){
 	QuickSort2(arr,left,low-1);
 	QuickSort2(arr,low+1,right);
 }
-/*
+
 //前后指针法
 void QuickSort3(int *arr,int left,int right){
 	if(left>=right){
@@ -120,7 +297,7 @@ void QuickSort3(int *arr,int left,int right){
 	QuickSort3(arr,left,prev-1);
 	QuickSort3(arr,prev+1,right);
 }
-*/
+
 //前后指针法
 void QuickSort3(int *arr,int left,int right){
 	if(left>=right){
@@ -190,12 +367,8 @@ void SelectSort(int *arr,int size){
 		right--;
 	}
 }
-
-
-
-
 #endif
-
+*/
 
 /*
 ////////////////////////////////////
